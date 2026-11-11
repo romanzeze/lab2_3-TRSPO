@@ -1,0 +1,1032 @@
+{
+  "info": {
+    "name": "Hospital REST (лабораторна №3)",
+    "description": "Запускайте запити по порядку: колекція демонструє всі правила варіанта «Лікарня». Сервіс має працювати на localhost:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "patientId",
+      "value": ""
+    },
+    {
+      "key": "operationId",
+      "value": ""
+    },
+    {
+      "key": "medicineId",
+      "value": ""
+    },
+    {
+      "key": "doctorId",
+      "value": ""
+    },
+    {
+      "key": "nurseId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Створити пацієнта",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Іван Петренко\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('patientId', pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Діагноз: лікар (200)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/diagnosis",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "diagnosis"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"diagnosis\": \"Апендицит\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Діагноз: медсестра (403)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "NURSE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/diagnosis",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "diagnosis"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"diagnosis\": \"Апендицит\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 403', () => pm.response.to.have.status(403));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Призначення OPERATION (лікар)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/prescriptions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "prescriptions"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"OPERATION\",\n  \"description\": \"Апендектомія\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('operationId', pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Призначення MEDICINE (лікар)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/prescriptions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "prescriptions"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"MEDICINE\",\n  \"description\": \"Антибіотик\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('medicineId', pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Призначення: невірний тип (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/prescriptions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "prescriptions"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"MAGIC\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Призначення: медсестра (403)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "NURSE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/prescriptions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "prescriptions"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"MEDICINE\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 403', () => pm.response.to.have.status(403));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Медсестра виконує операцію (403)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "NURSE"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/prescriptions/{{operationId}}/execute",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "prescriptions",
+            "{{operationId}}",
+            "execute"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 403', () => pm.response.to.have.status(403));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Медсестра виконує ліки (200)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "NURSE"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/prescriptions/{{medicineId}}/execute",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "prescriptions",
+            "{{medicineId}}",
+            "execute"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('doneBy = NURSE', () => pm.expect(pm.response.json().doneBy).to.eql('NURSE'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Повторне виконання (409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/prescriptions/{{medicineId}}/execute",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "prescriptions",
+            "{{medicineId}}",
+            "execute"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Лікар виконує операцію (200)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/prescriptions/{{operationId}}/execute",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "prescriptions",
+            "{{operationId}}",
+            "execute"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Усі призначення пацієнта",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/prescriptions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "prescriptions"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('2 призначення', () => pm.expect(pm.response.json().length).to.eql(2));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. Фільтр: виконані",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/prescriptions?status=done",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "prescriptions?status=done"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14. Фільтр: невиконані",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/prescriptions?status=pending",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "prescriptions?status=pending"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15. Виписка без кінцевого діагнозу (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/discharge",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "discharge"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 400', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16. Виписка: медсестра (403)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "NURSE"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/discharge",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "discharge"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"finalDiagnosis\": \"Одужав\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 403', () => pm.response.to.have.status(403));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17. Виписка: лікар (200)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/discharge",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "discharge"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"finalDiagnosis\": \"Одужав\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));",
+              "pm.test('виписаний', () => pm.expect(pm.response.json().discharged).to.be.true);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18. Повторна виписка (409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/discharge",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "discharge"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"finalDiagnosis\": \"Одужав\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "19. Призначення виписаному (409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Role",
+            "value": "DOCTOR"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}/prescriptions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}",
+            "prescriptions"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"MEDICINE\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "20. Пацієнт не знайдений (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/patients/999999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "999999"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 404', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "21. Оновити пацієнта (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Іван П.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "22. Створити лікаря",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/doctors",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "doctors"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Олена Коваль\",\n  \"profile\": \"хірург\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('doctorId', pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "23. Створити медсестру",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/nurses",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "nurses"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Марія Шевченко\",\n  \"profile\": \"процедурна\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 201', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('nurseId', pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "24. Видалити медсестру (204)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/nurses/{{nurseId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "nurses",
+            "{{nurseId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 204', () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "25. Видалити пацієнта (204)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/patients/{{patientId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "patients",
+            "{{patientId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 204', () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
