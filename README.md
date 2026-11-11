@@ -9,24 +9,24 @@ REST-сервіс на Spring Boot 3 (Java 17+). Підтримує запити
 
 ## Збірка та запуск
 
-Потрібна Java 17 або новіша (Gradle завантажується автоматично через wrapper).
+Потрібні Java 17 або новіша та Maven 3.9+.
 
 ```bash
-./gradlew bootRun
+mvn spring-boot:run
 ```
 
-Якщо `./gradlew` не запускається (немає прав на виконання), використайте `sh gradlew bootRun`. Сервіс слухає порт **8080**.
+Сервіс слухає порт **8080**.
 
 Запуск тестів:
 
 ```bash
-./gradlew test
+mvn test
 ```
 
 Збереження даних у MySQL (необов'язково): створіть змінну `DB_PASSWORD` (пароль у репозиторії не зберігається) і запустіть
 
 ```bash
-DB_PASSWORD=ваш_пароль ./gradlew bootRun --args='--spring.profiles.active=mysql'
+DB_PASSWORD=ваш_пароль mvn spring-boot:run -Dspring-boot.run.profiles=mysql
 ```
 
 ## Ролі
